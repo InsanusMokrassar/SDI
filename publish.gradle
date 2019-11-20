@@ -1,0 +1,27 @@
+apply plugin: 'com.jfrog.bintray'
+
+apply from: "maven.publish.gradle"
+
+bintray {
+    user = project.hasProperty('BINTRAY_USER') ? project.property('BINTRAY_USER') : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('BINTRAY_KEY') ? project.property('BINTRAY_KEY') : System.getenv('BINTRAY_KEY')
+    pkg {
+        repo = "$project_bintray_repo"
+        name = "${project.name}"
+        vcsUrl = "${project_url}"
+        licenses = ["${project_public_license_name}"]
+        version {
+            name = "${project.version}"
+            released = new Date()
+            vcsTag = "${project.version}"
+        }
+    }
+}
+
+bintrayUpload.doFirst {
+    publications = publishing.publications.collect {
+        it.name
+    }
+}
+
+bintrayUpload.dependsOn publishToMavenLocal

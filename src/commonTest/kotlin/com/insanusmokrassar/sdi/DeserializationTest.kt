@@ -3,6 +3,7 @@ package com.insanusmokrassar.sdi
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
+import kotlin.test.assertTrue
 
 interface ControllerAPI {
     fun showUp()
@@ -12,8 +13,7 @@ interface ServiceAPI {
 }
 
 @Serializable
-class Controller(@ContextualSerialization private val service : ServiceAPI) :
-    ControllerAPI {
+class Controller(@ContextualSerialization private val service : ServiceAPI) : ControllerAPI {
     override fun showUp() {
         println("Inited with name \"${service.name}\"")
     }
@@ -27,7 +27,7 @@ class BusinessService : ServiceAPI {
 @ImplicitReflectionSerializer
 class DeserializationTest {
     @Test
-    fun `Test_that_simple_config_correctly_work`() {
+    fun test_that_simple_config_correctly_work() {
         val input = """
             {
                 "service": [
