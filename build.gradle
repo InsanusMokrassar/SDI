@@ -48,7 +48,6 @@ kotlin {
         }
         jvmMain {
             dependencies {
-                implementation kotlin('stdlib-jdk8')
                 api "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlin_serialisation_runtime_version"
             }
         }

@@ -40,11 +40,6 @@ publishing {
                         name "Ovsyannikov Alexey"
                         email "ovsyannikov.alexey95@gmail.com"
                     }
-                    developer {
-                        id "mi-ast"
-                        name "Michail Astafiev"
-                        email "astaf65@gmail.com"
-                    }
                 }
 
                 licenses {
