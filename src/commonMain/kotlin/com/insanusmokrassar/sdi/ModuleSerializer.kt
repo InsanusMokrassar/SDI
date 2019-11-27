@@ -13,7 +13,7 @@ class Module(base: Map<String, @ContextualSerialization Any>) : Map<String, Any>
 
 @ImplicitReflectionSerializer
 @Serializer(Module::class)
-object ModuleSerializer : KSerializer<Module> {
+internal object ModuleSerializer : KSerializer<Module> {
     private val internalSerializer = HashMapSerializer(StringSerializer, ContextSerializer(Any::class))
     override val descriptor: SerialDescriptor
         get() = internalSerializer.descriptor

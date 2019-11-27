@@ -2,8 +2,7 @@ package com.insanusmokrassar.sdi
 
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
-import kotlin.test.Test
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 interface ControllerAPI {
     fun showUp()
@@ -13,7 +12,7 @@ interface ServiceAPI {
 }
 
 @Serializable
-class Controller(@ContextualSerialization private val service: ServiceAPI) : ControllerAPI {
+class Controller(@ContextualSerialization val service: ServiceAPI) : ControllerAPI {
     override fun showUp() {
         println("Inited with name \"${service.names}\"")
     }
@@ -25,12 +24,13 @@ class BusinessService(override val names: List<String>) : ServiceAPI
 class DeserializationTest {
     @Test
     fun test_that_simple_config_correctly_work() {
+        val names = arrayOf("nameOne", "nameTwo")
         val input = """
             {
                 "service": [
                     "com.insanusmokrassar.sdi.BusinessService",
                     {
-                        "names": ["nameOne", "nameTwo"]
+                        "names": ${names.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }}
                     }
                 ],
                 "controller": [
@@ -41,7 +41,9 @@ class DeserializationTest {
                 ]
             }
         """.trimIndent()
-        val module = Json.plain.parse(ModuleSerializer, input)
-        (module["controller"] as ControllerAPI).showUp()
+        val module = Json.plain.parse(Module.serializer(), input)
+        (module["controller"] as ControllerAPI)
+        val controller = (module["controller"] as Controller)
+        assertEquals(names.toList(), controller.service.names)
     }
 }
