@@ -25,16 +25,17 @@ class DeserializationTest {
     @Test
     fun test_that_simple_config_correctly_work() {
         val names = arrayOf("nameOne", "nameTwo")
+        val controllerName = "controller"
         val input = """
             {
                 "service": [
-                    "com.insanusmokrassar.sdi.BusinessService",
+                    "${BusinessService::class.qualifiedName}",
                     {
                         "names": ${names.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }}
                     }
                 ],
-                "controller": [
-                    "com.insanusmokrassar.sdi.Controller",
+                "$controllerName": [
+                    "${Controller::class.qualifiedName}",
                     {
                         "service": "service"
                     }
@@ -42,7 +43,7 @@ class DeserializationTest {
             }
         """.trimIndent()
         val module = Json.plain.parse(Module.serializer(), input)
-        (module["controller"] as ControllerAPI)
+        (module[controllerName] as ControllerAPI)
         val controller = (module["controller"] as Controller)
         assertEquals(names.toList(), controller.service.names)
     }
