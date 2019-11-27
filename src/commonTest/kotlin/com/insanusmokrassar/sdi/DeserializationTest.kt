@@ -9,20 +9,17 @@ interface ControllerAPI {
     fun showUp()
 }
 interface ServiceAPI {
-    val name: String
+    val names: List<String>
 }
 
 @Serializable
-class Controller(@ContextualSerialization private val service : ServiceAPI) : ControllerAPI {
+class Controller(@ContextualSerialization private val service: ServiceAPI) : ControllerAPI {
     override fun showUp() {
-        println("Inited with name \"${service.name}\"")
+        println("Inited with name \"${service.names}\"")
     }
 }
 @Serializable
-class BusinessService : ServiceAPI {
-    @Transient
-    override val name = "Example of business name"
-}
+class BusinessService(override val names: List<String>) : ServiceAPI
 
 @ImplicitReflectionSerializer
 class DeserializationTest {
@@ -31,7 +28,10 @@ class DeserializationTest {
         val input = """
             {
                 "service": [
-                    "com.insanusmokrassar.sdi.BusinessService"
+                    "com.insanusmokrassar.sdi.BusinessService",
+                    {
+                        "names": ["nameOne", "nameTwo"]
+                    }
                 ],
                 "controller": [
                     "com.insanusmokrassar.sdi.Controller",

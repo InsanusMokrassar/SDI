@@ -8,6 +8,11 @@ import kotlin.reflect.KType
 @ImplicitReflectionSerializer
 expect fun resolveSerializerByPackageName(packageName: String): KSerializer<*>
 
+@ImplicitReflectionSerializer
+expect fun <T : Any> resolveSerializerByKClass(kClass: KClass<T>): KSerializer<T>
+
+expect fun resolveKClassByPackageName(packageName: String): KClass<*>
+
 expect val KClass<*>.currentSupertypes: List<KType>
 
 val KClass<*>.allSubclasses: Set<KClass<*>>
