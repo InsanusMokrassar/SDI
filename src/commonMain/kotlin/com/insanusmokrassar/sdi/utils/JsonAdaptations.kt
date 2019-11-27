@@ -72,7 +72,7 @@ internal fun createModuleBasedOnConfigRoot(jsonObject: JsonObject): Json {
                     DependencyResolver(this, kclass) {
                         caches.getValue(it).invoke()
                     }
-                } catch (e: SerializationException) {
+                } catch (e: SerializerAlreadyRegisteredException) {
                     // here we are thinking that already registered
                 }
             }

@@ -4,24 +4,24 @@ import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
 import kotlin.test.*
 
-interface ControllerAPI {
+interface Simple_ControllerAPI {
     fun showUp()
 }
-interface ServiceAPI {
+interface Simple_ServiceAPI {
     val names: List<String>
 }
 
 @Serializable
-class Controller(@ContextualSerialization val service: ServiceAPI) : ControllerAPI {
+class Simple_Controller(@ContextualSerialization val service: Simple_ServiceAPI) : Simple_ControllerAPI {
     override fun showUp() {
         println("Inited with name \"${service.names}\"")
     }
 }
 @Serializable
-class BusinessService(override val names: List<String>) : ServiceAPI
+class Simple_BusinessService(override val names: List<String>) : Simple_ServiceAPI
 
 @ImplicitReflectionSerializer
-class DeserializationTest {
+class SimpleTest {
     @Test
     fun test_that_simple_config_correctly_work() {
         val names = arrayOf("nameOne", "nameTwo")
@@ -29,13 +29,13 @@ class DeserializationTest {
         val input = """
             {
                 "service": [
-                    "${BusinessService::class.qualifiedName}",
+                    "${Simple_BusinessService::class.qualifiedName}",
                     {
                         "names": ${names.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }}
                     }
                 ],
                 "$controllerName": [
-                    "${Controller::class.qualifiedName}",
+                    "${Simple_Controller::class.qualifiedName}",
                     {
                         "service": "service"
                     }
@@ -43,8 +43,8 @@ class DeserializationTest {
             }
         """.trimIndent()
         val module = Json.plain.parse(Module.serializer(), input)
-        (module[controllerName] as ControllerAPI)
-        val controller = (module["controller"] as Controller)
+        (module[controllerName] as Simple_ControllerAPI)
+        val controller = (module["controller"] as Simple_Controller)
         assertEquals(names.toList(), controller.service.names)
     }
 }
