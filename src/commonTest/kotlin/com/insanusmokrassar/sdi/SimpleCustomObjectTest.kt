@@ -67,12 +67,12 @@ class SimpleCustomObjectTest {
                             }
                         ]
                     }
-                ]
+                ],
                 "$customController2Name": [
                     "${SimpleCustomObject_CustomController2::class.qualifiedName}",
                     {
                         "service": {
-                            "names": "${customNames.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }}
+                            "names": ${customNames.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }}
                         }
                     }
                 ]
