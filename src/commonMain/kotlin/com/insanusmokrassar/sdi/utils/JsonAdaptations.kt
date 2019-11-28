@@ -64,12 +64,17 @@ internal fun createModuleBasedOnConfigRoot(jsonObject: JsonObject): Json {
     }.toMap()
 
     return Json(
+        configuration = JsonConfiguration(useArrayPolymorphism = true),
         context = SerializersModule {
             keysToPackages.values.forEach {
                 val kclass = resolveKClassByPackageName(it)
 
                 try {
-                    DependencyResolver(this, kclass) {
+                    DependencyResolver(
+                        this,
+                        kclass,
+                        { jsonStringFormat }
+                    ) {
                         caches.getValue(it).invoke()
                     }
                 } catch (e: SerializerAlreadyRegisteredException) {

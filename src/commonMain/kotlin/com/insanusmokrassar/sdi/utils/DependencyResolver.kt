@@ -1,31 +1,32 @@
 package com.insanusmokrassar.sdi.utils
 
 import kotlinx.serialization.*
-import kotlinx.serialization.internal.StringDescriptor
-import kotlinx.serialization.modules.SerializerAlreadyRegisteredException
-import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlinx.serialization.json.*
+import kotlinx.serialization.modules.*
 import kotlin.reflect.KClass
 
 @ImplicitReflectionSerializer
 internal class DependencyResolver<T : Any>(
     serialModuleBuilder: SerializersModuleBuilder,
     kClass: KClass<T>,
+    private val formatterGetter: () -> Json,
     private val dependencyGetter: (String) -> Any
 ) : KSerializer<T> {
-    private val originalSerializer: KSerializer<T>? = try {
+    private val originalSerializer: KSerializer<T> = try {
         resolveSerializerByKClass(kClass)
     } catch (e: Exception) {
-        null
+        PolymorphicSerializer(kClass)
     }
     private val objectsCache = mutableMapOf<String, T>()
-    override val descriptor: SerialDescriptor = originalSerializer ?.descriptor ?: StringDescriptor.withName("DependencyResolver")
+    override val descriptor: SerialDescriptor = originalSerializer.descriptor
 
     init {
         serialModuleBuilder.apply {
             contextual(kClass, this@DependencyResolver)
-            kClass.allSubclasses.forEach { kClass ->
+            polymorphic(kClass, originalSerializer)
+            kClass.allSubclasses.forEach { currentKClass ->
                 try {
-                    DependencyResolver(serialModuleBuilder, kClass, dependencyGetter)
+                    DependencyResolver(serialModuleBuilder, currentKClass, formatterGetter, dependencyGetter)
                 } catch (e: SerializerAlreadyRegisteredException) {
                     // ok
                 }
@@ -34,13 +35,18 @@ internal class DependencyResolver<T : Any>(
     }
 
     override fun deserialize(decoder: Decoder): T {
-        return try {
-            val dependencyName = decoder.decodeString()
-            (dependencyGetter(dependencyName) as T).also {
-                objectsCache[dependencyName] = it
+        val decoded = decoder.decodeSerializableValue(JsonElementSerializer)
+        return when {
+            decoded is JsonPrimitive && decoded.contentOrNull != null -> decoded.content.let { dependencyName ->
+                (dependencyGetter(dependencyName) as T).also {
+                    objectsCache[dependencyName] = it
+                }
             }
-        } catch (e: Exception) {
-            originalSerializer ?.deserialize(decoder) ?: throw IllegalStateException("Can't resolve dependency", e)
+            decoded is JsonArray -> {
+                val serializer = resolveSerializerByPackageName(decoded.getPrimitive(0).content)
+                formatterGetter().fromJson(serializer, decoded[1]) as T
+            }
+            else -> formatterGetter().fromJson(originalSerializer, decoded)
         }
     }
 
@@ -49,6 +55,6 @@ internal class DependencyResolver<T : Any>(
             objectsCache[it] === obj
         } ?.also { dependencyName ->
             encoder.encodeString(dependencyName)
-        } ?: originalSerializer ?.serialize(encoder, obj) ?: throw IllegalStateException("Can't resolve dependency")
+        } ?: originalSerializer.serialize(encoder, obj)
     }
 }
