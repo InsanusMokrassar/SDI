@@ -2,7 +2,7 @@
 
 It is simple (in comparison with other systems) DI, which aim to be compatible and predictable.
 
-## Availability platforms
+## Platforms support
 
 * [x] JVM
 * [ ] JS
@@ -18,7 +18,7 @@ To use this library you will need two things:
 Unfortunately, currently not supported other formats (due to
 [issue in Kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization/issues/615))
 
-## Rules
+## Format of config
 
 Full examples of usage you can find in [tests](src/commonTest/kotlin/com/insanusmokrassar/sdi). In two words, there are
 a few rules for constructing of config:
@@ -27,3 +27,80 @@ a few rules for constructing of config:
 * Config root names will be used as dependency names
 * In the config dependency names can be used everywhere
 * In places, where dependency will be injected, must be used `@ContextualSerializer` annotation or `@Serializer(ContextSerializer::class)`
+
+### Examples
+
+Lets imagine, that we have several interfaces and classes:
+
+```kotlin
+package com.example
+
+// ... //
+
+interface ControllerAPI {
+    fun showUp()
+}
+interface ServiceAPI {
+    val names: List<String>
+}
+
+@Serializable
+class Controller(@ContextualSerialization val service: ServiceAPI) : ControllerAPI {
+    override fun showUp() {
+        println("Inited with name \"${service.names}\"")
+    }
+}
+@Serializable
+class BusinessService(override val names: List<String>) : ServiceAPI
+```
+
+Here there is common way to create all of this directly:
+
+```kotlin
+val service = BusinessService(listOf("One", "Two"))
+val controller = Controller(service)
+```
+
+And with config for this library:
+
+```json
+{
+  "service": [
+    "com.example.BusinessService",
+    {
+      "names": ["One", "Two"]
+    }
+  ],
+  "controller": [
+    "com.example.Controller",
+    {
+      "service": "service"
+    }
+  ]
+}
+```
+
+List example you can find in
+[this test](https://git.insanusmokrassar.com/InsanusMokrassar/SDI/src/master/src/commonTest/kotlin/com/insanusmokrassar/sdi/ListTest.kt).
+Besides, usually you can create objects inside of places where expected something like dependency injection directly. In
+this case config will look like:
+
+```json
+{
+  "controller": [
+    "com.example.Controller",
+    {
+      "service": [
+        "com.example.BusinessService",
+        {
+          "names": ["One", "Two"]
+        }
+      ]
+    }
+  ]
+}
+```
+
+More expanded example you can find in
+[suitable test](https://git.insanusmokrassar.com/InsanusMokrassar/SDI/src/master/src/commonTest/kotlin/com/insanusmokrassar/sdi/SimpleCustomObjectTest.kt#L63).
+
