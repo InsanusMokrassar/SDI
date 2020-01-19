@@ -1,5 +1,4 @@
 apply plugin: 'maven-publish'
-apply plugin: 'signing'
 
 task javadocsJar(type: Jar) {
     classifier = 'javadoc'
@@ -25,8 +24,8 @@ publishing {
             asNode().children().last() + {
                 resolveStrategy = Closure.DELEGATE_FIRST
 
-                description "Simple DI library"
-                name "Simple Dependency Injection"
+                description "Simple library for creating dependencies tree using Kotlin Serialization"
+                name "Simple Dependency Injector"
                 url "https://git.insanusmokrassar.com/InsanusMokrassar/SDI"
 
                 scm {
@@ -55,9 +54,4 @@ publishing {
             }
         }
     }
-}
-
-signing {
-    useGpgCmd()
-    sign(publishing.publications)
 }

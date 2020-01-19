@@ -5,23 +5,51 @@ apply from: "maven.publish.gradle"
 bintray {
     user = project.hasProperty('BINTRAY_USER') ? project.property('BINTRAY_USER') : System.getenv('BINTRAY_USER')
     key = project.hasProperty('BINTRAY_KEY') ? project.property('BINTRAY_KEY') : System.getenv('BINTRAY_KEY')
+    filesSpec {
+        from "${buildDir}/publications/"
+        eachFile {
+            String directorySubname = it.getFile().parentFile.name
+            if (it.getName() == "module.json") {
+                if (directorySubname == "kotlinMultiplatform") {
+                    it.setPath("${project.name}/${project.version}/${project.name}-${project.version}.module")
+                } else {
+                    it.setPath("${project.name}-${directorySubname}/${project.version}/${project.name}-${directorySubname}-${project.version}.module")
+                }
+            } else {
+                if (directorySubname == "kotlinMultiplatform" && it.getName() == "pom-default.xml") {
+                    it.setPath("${project.name}/${project.version}/${project.name}-${project.version}.pom")
+                } else {
+                    it.exclude()
+                }
+            }
+        }
+        into "${project.group}".replace(".", "/")
+    }
     pkg {
         repo = "InsanusMokrassar"
         name = "${project.name}"
-        vcsUrl = "https://github.com/InsanusMokrassar/SDI_mirror"
+        vcsUrl = "https://git.insanusmokrassar.com/InsanusMokrassar/SDI.git"
         licenses = ["Apache-2.0"]
         version {
             name = "${project.version}"
             released = new Date()
             vcsTag = "${project.version}"
+            gpg {
+                sign = true
+                passphrase = project.hasProperty('signing.gnupg.passphrase') ? project.property('signing.gnupg.passphrase') : System.getenv('signing.gnupg.passphrase')
+            }
         }
     }
 }
 
 bintrayUpload.doFirst {
     publications = publishing.publications.collect {
-        it.name
-    }
+        if (it.name.contains('kotlinMultiplatform')) {
+            null
+        } else {
+            it.name
+        }
+    } - null
 }
 
 bintrayUpload.dependsOn publishToMavenLocal
