@@ -40,8 +40,6 @@ dependencies {
 
 Last version shown here: [ ![Download](https://api.bintray.com/packages/insanusmokrassar/InsanusMokrassar/sdi/images/download.svg) ](https://bintray.com/insanusmokrassar/InsanusMokrassar/sdi/_latestVersion)
 
-
-
 ## Format of config
 
 Full examples of usage you can find in [tests](src/commonTest/kotlin/com/insanusmokrassar/sdi). In two words, there are
@@ -103,6 +101,15 @@ And with config for this library:
   ]
 }
 ```
+
+Kotlin code will be:
+
+```kotlin
+val module = Json.plain.parse(Module.serializer(), input)
+val businessService = (module["service"] as BusinessService)
+```
+
+Here `input` is a json of configuration.
 
 List example you can find in
 [this test](https://git.insanusmokrassar.com/InsanusMokrassar/SDI/src/master/src/commonTest/kotlin/com/insanusmokrassar/sdi/ListTest.kt).
