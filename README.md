@@ -18,6 +18,30 @@ To use this library you will need two things:
 Unfortunately, currently not supported other formats (due to
 [issue in Kotlinx.serialization](https://github.com/Kotlin/kotlinx.serialization/issues/615))
 
+## How to implement
+
+Currently you can connect repository JCenter:
+
+```groovy
+repositories {
+    // ...
+    jcenter()
+    // ...
+}
+```
+
+and implement it like here:
+
+```groovy
+dependencies {
+    implementation "com.insanusmokrassar:sdi:$sdi_version"
+}
+```
+
+Last version shown here: [ ![Download](https://api.bintray.com/packages/insanusmokrassar/InsanusMokrassar/sdi/images/download.svg) ](https://bintray.com/insanusmokrassar/InsanusMokrassar/sdi/_latestVersion)
+
+
+
 ## Format of config
 
 Full examples of usage you can find in [tests](src/commonTest/kotlin/com/insanusmokrassar/sdi). In two words, there are
