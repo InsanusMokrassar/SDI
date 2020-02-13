@@ -1,5 +1,7 @@
 # SDI changelogs
 
+## 0.1.2
+
 ## 0.1.1
 
 * Added opportunity to create objects inside of config:
