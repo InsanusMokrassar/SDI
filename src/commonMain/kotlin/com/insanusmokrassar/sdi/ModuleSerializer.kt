@@ -6,13 +6,10 @@ import kotlinx.serialization.internal.HashMapSerializer
 import kotlinx.serialization.internal.StringSerializer
 import kotlinx.serialization.json.*
 
-@ImplicitReflectionSerializer
-@Serializable(ModuleSerializer::class)
-class Module(base: Map<String, @ContextualSerialization Any>) : Map<String, Any> by base
+class Module internal constructor(base: Map<String, @ContextualSerialization Any>) : Map<String, Any> by base
 
 @ImplicitReflectionSerializer
-@Serializer(Module::class)
-internal object ModuleSerializer : KSerializer<Module> {
+internal object ModuleDeserializerStrategy : DeserializationStrategy<Module> {
     private val internalSerializer = HashMapSerializer(StringSerializer, ContextSerializer(Any::class))
     override val descriptor: SerialDescriptor
         get() = internalSerializer.descriptor
@@ -27,7 +24,5 @@ internal object ModuleSerializer : KSerializer<Module> {
         return Module(map)
     }
 
-    override fun serialize(encoder: Encoder, obj: Module) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-    }
+    override fun patch(decoder: Decoder, old: Module): Module = throw UpdateNotSupportedException("Module")
 }
