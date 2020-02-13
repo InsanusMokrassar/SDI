@@ -45,7 +45,7 @@ class ListTest {
                 ]
             }
         """.trimIndent()
-        val module = Json.plain.parse(Module.serializer(), input)
+        val module = loadModule(input)
         (module[controllerName] as List_ParentalAPI)
         val controller = (module[controllerName] as List_Parent)
         controller.services.forEachIndexed { i, service ->

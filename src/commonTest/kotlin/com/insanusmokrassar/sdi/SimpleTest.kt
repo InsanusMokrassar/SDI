@@ -43,7 +43,7 @@ class SimpleTest {
                 ]
             }
         """.trimIndent()
-        val module = Json.plain.parse(Module.serializer(), input)
+        val module = loadModule(input)
         (module[controllerName] as Simple_ControllerAPI)
         val controller = (module["controller"] as Simple_Controller)
         assertEquals(names.toList(), controller.service.names)

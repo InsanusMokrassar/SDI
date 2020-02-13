@@ -79,7 +79,7 @@ class SimpleCustomObjectTest {
                 ]
             }
         """.trimIndent()
-        val module = Json.plain.parse(Module.serializer(), input)
+        val module = loadModule(input)
 
         (module[controllerName] as SimpleCustomObject_ControllerAPI)
         val controller = (module["controller"] as SimpleCustomObject_Controller)
