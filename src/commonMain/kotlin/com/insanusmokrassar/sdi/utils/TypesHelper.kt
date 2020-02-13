@@ -1,24 +1,22 @@
 package com.insanusmokrassar.sdi.utils
 
-import kotlinx.serialization.ImplicitReflectionSerializer
-import kotlinx.serialization.KSerializer
+import kotlinx.serialization.*
 import kotlin.reflect.KClass
-import kotlin.reflect.KType
-
-@ImplicitReflectionSerializer
-expect fun resolveSerializerByPackageName(packageName: String): KSerializer<*>
-
-@ImplicitReflectionSerializer
-expect fun <T : Any> resolveSerializerByKClass(kClass: KClass<T>): KSerializer<T>
 
 expect fun resolveKClassByPackageName(packageName: String): KClass<*>
 
-expect val KClass<*>.currentSupertypes: List<KType>
+@ImplicitReflectionSerializer
+internal fun <T : Any> resolveSerializerByKClass(kClass: KClass<T>): KSerializer<T> = kClass.serializer()
 
-val KClass<*>.allSubclasses: Set<KClass<*>>
+@ImplicitReflectionSerializer
+internal fun resolveSerializerByPackageName(packageName: String): KSerializer<*> = resolveSerializerByKClass(
+    resolveKClassByPackageName(packageName)
+)
+
+internal val KClass<*>.allSubclasses: Set<KClass<*>>
     get() {
         val subclasses = mutableSetOf<KClass<*>>()
-        val leftToVisit = currentSupertypes.mapNotNull { it.classifier as? KClass<*> }.toMutableList()
+        val leftToVisit = supertypes.mapNotNull { it.classifier as? KClass<*> }.toMutableList()
         while (leftToVisit.isNotEmpty()) {
             val top = leftToVisit.removeAt(0)
             if (subclasses.add(top)) {
