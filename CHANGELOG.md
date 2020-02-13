@@ -3,6 +3,7 @@
 ## 0.1.2
 
 * All reflection support methods are internal
+* Added `lodModule` functions for more useful working with modules loading
 
 ## 0.1.1
 
