@@ -6,8 +6,6 @@ import kotlinx.serialization.internal.HashMapSerializer
 import kotlinx.serialization.internal.StringSerializer
 import kotlinx.serialization.json.*
 
-class Module internal constructor(base: Map<String, @ContextualSerialization Any>) : Map<String, Any> by base
-
 @ImplicitReflectionSerializer
 internal object ModuleDeserializerStrategy : DeserializationStrategy<Module> {
     private val internalSerializer = HashMapSerializer(StringSerializer, ContextSerializer(Any::class))
