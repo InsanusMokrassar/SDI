@@ -3,7 +3,7 @@ package com.insanusmokrassar.sdi.utils
 import kotlinx.serialization.*
 import kotlin.reflect.KClass
 
-expect fun resolveKClassByPackageName(packageName: String): KClass<*>
+internal expect fun resolveKClassByPackageName(packageName: String): KClass<*>
 
 @ImplicitReflectionSerializer
 internal fun <T : Any> resolveSerializerByKClass(kClass: KClass<T>): KSerializer<T> = kClass.serializer()
