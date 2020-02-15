@@ -2,7 +2,8 @@ package com.insanusmokrassar.sdi
 
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 interface Simple_ControllerAPI {
     fun showUp()
@@ -42,7 +43,7 @@ class SimpleTest {
                 ]
             }
         """.trimIndent()
-        val module = Json.plain.parse(Module.serializer(), input)
+        val module = loadModule(input)
         (module[controllerName] as Simple_ControllerAPI)
         val controller = (module["controller"] as Simple_Controller)
         assertEquals(names.toList(), controller.service.names)

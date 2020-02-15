@@ -2,7 +2,8 @@ package com.insanusmokrassar.sdi.utils
 
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
-import kotlinx.serialization.modules.*
+import kotlinx.serialization.modules.SerializerAlreadyRegisteredException
+import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlin.reflect.KClass
 
 @ImplicitReflectionSerializer
@@ -13,7 +14,7 @@ internal class DependencyResolver<T : Any>(
     private val dependencyGetter: (String) -> Any
 ) : KSerializer<T> {
     private val originalSerializer: KSerializer<T> = try {
-        resolveSerializerByKClass(kClass)
+        kClass.serializer()
     } catch (e: Exception) {
         PolymorphicSerializer(kClass)
     }

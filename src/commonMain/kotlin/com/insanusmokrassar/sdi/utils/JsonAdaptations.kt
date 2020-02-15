@@ -1,8 +1,9 @@
 package com.insanusmokrassar.sdi.utils
 
-import kotlinx.serialization.*
+import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.json.*
-import kotlinx.serialization.modules.*
+import kotlinx.serialization.modules.SerializerAlreadyRegisteredException
+import kotlinx.serialization.modules.SerializersModule
 
 private typealias PackageOrOtherDependencyNamePair = Pair<String?, String?>
 
@@ -63,25 +64,26 @@ internal fun createModuleBasedOnConfigRoot(jsonObject: JsonObject): Json {
         key to packageName
     }.toMap()
 
-    return Json(
-        configuration = JsonConfiguration(useArrayPolymorphism = true),
-        context = SerializersModule {
-            keysToPackages.values.forEach {
-                val kclass = resolveKClassByPackageName(it)
+    val context = SerializersModule {
+        keysToPackages.values.forEach {
+            val kclass = resolveKClassByPackageName(it)
 
-                try {
-                    DependencyResolver(
-                        this,
-                        kclass,
-                        { jsonStringFormat }
-                    ) {
-                        caches.getValue(it).invoke()
-                    }
-                } catch (e: SerializerAlreadyRegisteredException) {
-                    // here we are thinking that already registered
+            try {
+                DependencyResolver(
+                    this,
+                    kclass,
+                    { jsonStringFormat }
+                ) {
+                    caches.getValue(it).invoke()
                 }
+            } catch (e: SerializerAlreadyRegisteredException) {
+                // here we are thinking that already registered
             }
         }
+    }
+    return Json(
+        configuration = JsonConfiguration(useArrayPolymorphism = true),
+        context = context
     ).also {
         jsonStringFormat = it
     }

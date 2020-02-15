@@ -2,7 +2,8 @@ package com.insanusmokrassar.sdi
 
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 interface SimpleCustomObject_ControllerAPI {
     fun showUp()
@@ -78,7 +79,7 @@ class SimpleCustomObjectTest {
                 ]
             }
         """.trimIndent()
-        val module = Json.plain.parse(Module.serializer(), input)
+        val module = loadModule(input)
 
         (module[controllerName] as SimpleCustomObject_ControllerAPI)
         val controller = (module["controller"] as SimpleCustomObject_Controller)

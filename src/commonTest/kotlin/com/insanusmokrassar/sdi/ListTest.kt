@@ -2,7 +2,8 @@ package com.insanusmokrassar.sdi
 
 import kotlinx.serialization.*
 import kotlinx.serialization.json.Json
-import kotlin.test.*
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 interface List_ParentalAPI {
     val services: List<List_ChildAPI>
@@ -44,7 +45,7 @@ class ListTest {
                 ]
             }
         """.trimIndent()
-        val module = Json.plain.parse(Module.serializer(), input)
+        val module = loadModule(input)
         (module[controllerName] as List_ParentalAPI)
         val controller = (module[controllerName] as List_Parent)
         controller.services.forEachIndexed { i, service ->
