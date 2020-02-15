@@ -1,6 +1,7 @@
 # SDI
 
-It is simple (in comparison with other systems) DI, which aim to be compatible and predictable.
+It is simple (in comparison with other systems) DI, which aim to be compatible and predictable. This library was created
+with aim on difficult systems with opportunity to reconfugiry most parts of behaviours without recompilation of code.
 
 ## Platforms support
 
