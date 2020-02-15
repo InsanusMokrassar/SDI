@@ -105,7 +105,7 @@ And with config for this library:
 Kotlin code will be:
 
 ```kotlin
-val module = Json.plain.parse(Module.serializer(), input)
+val module = loadModule(input)
 val businessService = (module["service"] as BusinessService)
 ```
 
