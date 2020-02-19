@@ -1,5 +1,9 @@
 # SDI
 
+ [ ![Download](https://api.bintray.com/packages/insanusmokrassar/InsanusMokrassar/sdi/images/download.svg) ](https://bintray.com/insanusmokrassar/InsanusMokrassar/sdi/_latestVersion)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.insanusmokrassar/sdi/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.insanusmokrassar/sdi)
+[![Build Status](https://travis-ci.com/InsanusMokrassar/SDI.svg?branch=master)](https://travis-ci.com/InsanusMokrassar/SDI)
+
 It is simple (in comparison with other systems) DI, which aim to be compatible and predictable. This library was created
 with aim on difficult systems with opportunity to reconfigure most parts of behaviours without recompilation of code.
 
