@@ -1,7 +1,6 @@
 package com.insanusmokrassar.sdi
 
 import kotlinx.serialization.*
-import kotlinx.serialization.json.Json
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
