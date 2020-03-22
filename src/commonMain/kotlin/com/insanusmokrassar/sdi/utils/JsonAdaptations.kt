@@ -1,6 +1,7 @@
 package com.insanusmokrassar.sdi.utils
 
 import kotlinx.serialization.ImplicitReflectionSerializer
+import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.SerializerAlreadyRegisteredException
 import kotlinx.serialization.modules.SerializersModule
@@ -21,6 +22,7 @@ private fun JsonElement.resolvePackageName(currentKey: String, otherDependencies
     }
 }
 
+@InternalSerializationApi
 @ImplicitReflectionSerializer
 internal fun createModuleBasedOnConfigRoot(jsonObject: JsonObject): Json {
     lateinit var caches: Map<String, () -> Any>

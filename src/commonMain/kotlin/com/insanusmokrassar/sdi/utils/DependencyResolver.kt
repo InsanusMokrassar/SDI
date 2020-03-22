@@ -6,6 +6,7 @@ import kotlinx.serialization.modules.SerializerAlreadyRegisteredException
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlin.reflect.KClass
 
+@InternalSerializationApi
 @ImplicitReflectionSerializer
 internal class DependencyResolver<T : Any>(
     serialModuleBuilder: SerializersModuleBuilder,
@@ -39,23 +40,25 @@ internal class DependencyResolver<T : Any>(
         val decoded = decoder.decodeSerializableValue(JsonElementSerializer)
         return when {
             decoded is JsonPrimitive && decoded.contentOrNull != null -> decoded.content.let { dependencyName ->
+                @Suppress("UNCHECKED_CAST")
                 (dependencyGetter(dependencyName) as T).also {
                     objectsCache[dependencyName] = it
                 }
             }
             decoded is JsonArray -> {
                 val serializer = resolveSerializerByPackageName(decoded.getPrimitive(0).content)
+                @Suppress("UNCHECKED_CAST")
                 formatterGetter().fromJson(serializer, decoded[1]) as T
             }
             else -> formatterGetter().fromJson(originalSerializer, decoded)
         }
     }
 
-    override fun serialize(encoder: Encoder, obj: T) {
+    override fun serialize(encoder: Encoder, value: T) {
         objectsCache.keys.firstOrNull {
-            objectsCache[it] === obj
+            objectsCache[it] === value
         } ?.also { dependencyName ->
             encoder.encodeString(dependencyName)
-        } ?: originalSerializer.serialize(encoder, obj)
+        } ?: originalSerializer.serialize(encoder, value)
     }
 }
