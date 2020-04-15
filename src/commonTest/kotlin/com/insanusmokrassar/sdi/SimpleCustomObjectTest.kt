@@ -31,8 +31,17 @@ class SimpleCustomObject_CustomController2(@ContextualSerialization val service:
         println("Inited with name \"${service.names}\"")
     }
 }
+
+@Serializable
+class SimpleCustomObject_CustomController3(@ContextualSerialization val service: SimpleCustomObject_ServiceAPI) : SimpleCustomObject_ControllerAPI {
+    override fun showUp() {
+        println("Inited with name \"${service.names}\"")
+    }
+}
 @Serializable
 class SimpleCustomObject_BusinessService(override val names: List<String>) : SimpleCustomObject_ServiceAPI
+@Serializable
+class SimpleCustomObject_BusinessService1(override val names: List<String>) : SimpleCustomObject_ServiceAPI
 
 @ImplicitReflectionSerializer
 class SimpleCustomObjectTest {
@@ -43,6 +52,7 @@ class SimpleCustomObjectTest {
         val controllerName = "controller"
         val customController1Name = "controller1"
         val customController2Name = "controller2"
+        val customController3Name = "controller3"
         val input = """
             {
                 "service": [
@@ -74,6 +84,17 @@ class SimpleCustomObjectTest {
                         "service": {
                             "names": ${customNames.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }}
                         }
+                    }
+                ],
+                "$customController3Name": [
+                    "${SimpleCustomObject_CustomController3::class.qualifiedName}",
+                    {
+                        "service": [
+                            "${SimpleCustomObject_BusinessService1::class.qualifiedName}",
+                            {
+                                "names": ${customNames.joinToString(prefix = "[", postfix = "]") { "\"$it\"" }}
+                            }
+                        ]
                     }
                 ]
             }

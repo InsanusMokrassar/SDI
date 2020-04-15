@@ -2,11 +2,11 @@ package com.insanusmokrassar.sdi.utils
 
 import kotlinx.serialization.*
 import kotlinx.serialization.json.*
-import kotlinx.serialization.modules.SerializerAlreadyRegisteredException
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlin.reflect.KClass
 
-@InternalSerializationApi
+internal object AlreadyRegisteredException : Exception()
+
 @ImplicitReflectionSerializer
 internal class DependencyResolver<T : Any>(
     serialModuleBuilder: SerializersModuleBuilder,
@@ -17,19 +17,22 @@ internal class DependencyResolver<T : Any>(
     private val originalSerializer: KSerializer<T> = try {
         kClass.serializer()
     } catch (e: Exception) {
-        PolymorphicSerializer(kClass)
+        ContextSerializer(kClass)
     }
     private val objectsCache = mutableMapOf<String, T>()
     override val descriptor: SerialDescriptor = originalSerializer.descriptor
 
     init {
         serialModuleBuilder.apply {
-            contextual(kClass, this@DependencyResolver)
-            polymorphic(kClass, originalSerializer)
+            try {
+                contextual(kClass, this@DependencyResolver)
+            } catch (e: IllegalArgumentException) {
+                throw AlreadyRegisteredException
+            }
             kClass.allSubclasses.forEach { currentKClass ->
                 try {
                     DependencyResolver(serialModuleBuilder, currentKClass, formatterGetter, dependencyGetter)
-                } catch (e: SerializerAlreadyRegisteredException) {
+                } catch (e: AlreadyRegisteredException) {
                     // ok
                 }
             }

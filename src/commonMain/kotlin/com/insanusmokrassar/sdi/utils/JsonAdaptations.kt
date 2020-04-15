@@ -3,8 +3,7 @@ package com.insanusmokrassar.sdi.utils
 import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.*
-import kotlinx.serialization.modules.SerializerAlreadyRegisteredException
-import kotlinx.serialization.modules.SerializersModule
+import kotlinx.serialization.modules.*
 
 private typealias PackageOrOtherDependencyNamePair = Pair<String?, String?>
 
@@ -22,9 +21,12 @@ private fun JsonElement.resolvePackageName(currentKey: String, otherDependencies
     }
 }
 
-@InternalSerializationApi
 @ImplicitReflectionSerializer
-internal fun createModuleBasedOnConfigRoot(jsonObject: JsonObject): Json {
+internal fun createModuleBasedOnConfigRoot(
+    jsonObject: JsonObject,
+    moduleBuilder: (SerializersModuleBuilder.() -> Unit)? = null,
+    baseContext: SerialModule
+): Json {
     lateinit var caches: Map<String, () -> Any>
     lateinit var jsonStringFormat: Json
     caches = jsonObject.keys.map { key ->
@@ -66,23 +68,28 @@ internal fun createModuleBasedOnConfigRoot(jsonObject: JsonObject): Json {
         key to packageName
     }.toMap()
 
-    val context = SerializersModule {
-        keysToPackages.values.forEach {
-            val kclass = resolveKClassByPackageName(it)
+    val context = baseContext.overwriteWith(
+        SerializersModule {
+            keysToPackages.values.forEach {
+                val kclass = resolveKClassByPackageName(it)
 
-            try {
-                DependencyResolver(
-                    this,
-                    kclass,
-                    { jsonStringFormat }
-                ) {
-                    caches.getValue(it).invoke()
+                try {
+                    DependencyResolver(
+                        this,
+                        kclass,
+                        { jsonStringFormat }
+                    ) {
+                        caches.getValue(it).invoke()
+                    }
+                } catch (e: AlreadyRegisteredException) {
+                    // here we are thinking that already registered
                 }
-            } catch (e: SerializerAlreadyRegisteredException) {
-                // here we are thinking that already registered
+            }
+            if (moduleBuilder != null) {
+                moduleBuilder()
             }
         }
-    }
+    )
     return Json(
         configuration = JsonConfiguration(useArrayPolymorphism = true),
         context = context
