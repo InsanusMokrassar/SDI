@@ -13,6 +13,7 @@
 
 * `Kotlin`: `1.3.71` -> `1.3.72`
 * Add `SerializersModuleBuilder#optionalContextual` for more comfortable usage of `contextual`
+* All `loadModule` functions now able to retrieve additional classes to inspect inside of serializer of module
 
 ## 0.2.0
 

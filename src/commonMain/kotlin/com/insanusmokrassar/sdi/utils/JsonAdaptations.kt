@@ -4,6 +4,7 @@ import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.*
+import kotlin.reflect.KClass
 
 private typealias PackageOrOtherDependencyNamePair = Pair<String?, String?>
 
@@ -25,7 +26,8 @@ private fun JsonElement.resolvePackageName(currentKey: String, otherDependencies
 internal fun createModuleBasedOnConfigRoot(
     jsonObject: JsonObject,
     moduleBuilder: (SerializersModuleBuilder.() -> Unit)? = null,
-    baseContext: SerialModule
+    baseContext: SerialModule,
+    vararg additionalClassesToInclude: KClass<*>
 ): Json {
     lateinit var caches: Map<String, () -> Any>
     lateinit var jsonStringFormat: Json
@@ -77,6 +79,19 @@ internal fun createModuleBasedOnConfigRoot(
                     DependencyResolver(
                         this,
                         kclass,
+                        { jsonStringFormat }
+                    ) {
+                        caches.getValue(it).invoke()
+                    }
+                } catch (e: AlreadyRegisteredException) {
+                    // here we are thinking that already registered
+                }
+            }
+            additionalClassesToInclude.forEach {
+                try {
+                    DependencyResolver(
+                        this,
+                        it,
                         { jsonStringFormat }
                     ) {
                         caches.getValue(it).invoke()

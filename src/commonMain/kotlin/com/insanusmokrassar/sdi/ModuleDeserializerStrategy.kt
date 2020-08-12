@@ -6,10 +6,12 @@ import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.SerializersModuleBuilder
+import kotlin.reflect.KClass
 
 @ImplicitReflectionSerializer
 internal class ModuleDeserializerStrategy(
-    private val moduleBuilder: (SerializersModuleBuilder.() -> Unit)? = null
+    private val moduleBuilder: (SerializersModuleBuilder.() -> Unit)? = null,
+    private vararg val additionalClassesToInclude: KClass<*>
 ) : DeserializationStrategy<Module> {
     private val internalSerializer = MapSerializer(String.serializer(), ContextSerializer(Any::class))
     override val descriptor: SerialDescriptor
@@ -17,7 +19,12 @@ internal class ModuleDeserializerStrategy(
 
     override fun deserialize(decoder: Decoder): Module {
         val json = JsonObjectSerializer.deserialize(decoder)
-        val jsonSerialFormat = createModuleBasedOnConfigRoot(json, moduleBuilder, decoder.context)
+        val jsonSerialFormat = createModuleBasedOnConfigRoot(
+            json,
+            moduleBuilder,
+            decoder.context,
+            *additionalClassesToInclude
+        )
         val resultJson = JsonObject(
             json.keys.associateWith { JsonPrimitive(it) }
         )
