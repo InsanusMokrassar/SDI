@@ -9,6 +9,8 @@
     * Now it will correctly resolve objects which was not previously registered
     * By default, for modules loading will be used context from `Json`, passed as receiver
 
+### 0.3.1
+
 ## 0.2.0
 
 * `Kotlin`: `1.3.61` -> `1.3.70`
