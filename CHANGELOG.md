@@ -12,6 +12,7 @@
 ### 0.3.1
 
 * `Kotlin`: `1.3.71` -> `1.3.72`
+* Add `SerializersModuleBuilder#optionalContextual` for more comfortable usage of `contextual`
 
 ## 0.2.0
 
