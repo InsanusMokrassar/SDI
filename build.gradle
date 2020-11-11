@@ -1,6 +1,5 @@
 buildscript {
     repositories {
-        mavenLocal()
         jcenter()
         mavenCentral()
     }
@@ -18,8 +17,8 @@ plugins {
     id "org.jetbrains.kotlin.plugin.serialization" version "$kotlin_version"
 }
 
-project.version = "0.3.1"
-project.group = "com.insanusmokrassar"
+project.version = "$version"
+project.group = "$group"
 
 apply from: "publish.gradle"
 
