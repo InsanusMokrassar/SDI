@@ -1,11 +1,18 @@
 package dev.inmo.sdi.utils
 
+import dev.inmo.sdi.getClassesForIncludingInSDI
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.*
 import kotlin.reflect.KClass
 
 private typealias PackageOrOtherDependencyNamePair = Pair<String?, String?>
+
+private val namesToTheirClasses = getClassesForIncludingInSDI().flatMap {
+    (it.second + it.first.qualifiedName!!).map { name ->
+        name to it.first.qualifiedName!!
+    }
+}.toMap()
 
 private fun JsonElement.resolvePackageName(currentKey: String, otherDependenciesKeys: Set<String>): PackageOrOtherDependencyNamePair {
     return when (this) {
@@ -16,8 +23,12 @@ private fun JsonElement.resolvePackageName(currentKey: String, otherDependencies
                 it to null
             }
         } ?: throw IllegalArgumentException("Value on dependency name \"$currentKey\" is invalid: provided $this, but expected package name or other dependency name string")
-        is JsonObject -> return currentKey to null
-        is JsonArray -> return get(0).jsonPrimitive.contentOrNull ?.let { it to null } ?: throw IllegalArgumentException("Value on first argument of dependency value must be its package as a string, but was provided ${get(0)}")
+        is JsonObject -> if (currentKey in otherDependenciesKeys) {
+            null to currentKey
+        } else {
+            (namesToTheirClasses[currentKey] ?: currentKey) to null
+        }
+        is JsonArray -> return get(0).jsonPrimitive.contentOrNull ?.let { (namesToTheirClasses[it] ?: it) to null } ?: throw IllegalArgumentException("Value on first argument of dependency value must be its package as a string, but was provided ${get(0)}")
     }
 }
 

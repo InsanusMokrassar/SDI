@@ -19,6 +19,7 @@ class List_Child(override val names: List<String>) : List_ChildAPI
 class ListTest {
     val servicesNum = 10
 
+    @InternalSerializationApi
     @Test
     fun test_that_simple_config_correctly_work() {
         val names = (0 until servicesNum).map {

@@ -21,6 +21,7 @@ class Simple_Controller(@Contextual val service: Simple_ServiceAPI) : Simple_Con
 class Simple_BusinessService(override val names: List<String>) : Simple_ServiceAPI
 
 class SimpleTest {
+    @InternalSerializationApi
     @Test
     fun test_that_simple_config_correctly_work() {
         val names = arrayOf("nameOne", "nameTwo")

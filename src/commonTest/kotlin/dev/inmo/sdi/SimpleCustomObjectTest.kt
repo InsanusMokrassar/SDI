@@ -48,6 +48,7 @@ class SimpleCustomObject_BusinessService(override val names: List<String>) : Sim
 class SimpleCustomObject_BusinessService1(override val names: List<String>) : SimpleCustomObject_ServiceAPI
 
 class SimpleCustomObjectTest {
+    @InternalSerializationApi
     @Test
     fun test_that_simple_config_correctly_work() {
         val names = arrayOf("nameOne", "nameTwo")

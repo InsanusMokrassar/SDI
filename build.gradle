@@ -46,6 +46,11 @@ kotlin {
                 implementation kotlin('test-annotations-common')
             }
         }
+        jvmMain {
+            dependencies {
+                api "org.atteo.classindex:classindex:$classindex_version"
+            }
+        }
         jvmTest {
             dependencies {
                 implementation kotlin('test-junit')
