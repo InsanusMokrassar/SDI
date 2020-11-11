@@ -2,6 +2,12 @@
 
 ## 0.4.0
 
+**ALL PROJECT HAS MIGRATED FROM PACKAGE `com.insanusmokrassar` TO `dev.inmo`**
+
+* `Kotlin`: `1.3.72` -> `1.4.10`
+* `Serialization`: `0.20.0` -> `1.0.1`
+
+
 ## 0.3.1
 
 * `Kotlin`: `1.3.71` -> `1.3.72`

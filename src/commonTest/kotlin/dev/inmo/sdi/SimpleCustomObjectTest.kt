@@ -1,4 +1,4 @@
-package com.insanusmokrassar.sdi
+package dev.inmo.sdi
 
 import kotlinx.serialization.*
 import kotlin.test.Test
@@ -12,28 +12,32 @@ interface SimpleCustomObject_ServiceAPI {
 }
 
 @Serializable
-class SimpleCustomObject_Controller(@ContextualSerialization val service: SimpleCustomObject_ServiceAPI) : SimpleCustomObject_ControllerAPI {
+class SimpleCustomObject_Controller(@Contextual val service: SimpleCustomObject_ServiceAPI) :
+    SimpleCustomObject_ControllerAPI {
     override fun showUp() {
         println("Inited with name \"${service.names}\"")
     }
 }
 
 @Serializable
-class SimpleCustomObject_CustomController1(@ContextualSerialization val service: SimpleCustomObject_ServiceAPI) : SimpleCustomObject_ControllerAPI {
+class SimpleCustomObject_CustomController1(@Contextual val service: SimpleCustomObject_ServiceAPI) :
+    SimpleCustomObject_ControllerAPI {
     override fun showUp() {
         println("Inited with name \"${service.names}\"")
     }
 }
 
 @Serializable
-class SimpleCustomObject_CustomController2(@ContextualSerialization val service: SimpleCustomObject_BusinessService) : SimpleCustomObject_ControllerAPI {
+class SimpleCustomObject_CustomController2(@Contextual val service: SimpleCustomObject_BusinessService) :
+    SimpleCustomObject_ControllerAPI {
     override fun showUp() {
         println("Inited with name \"${service.names}\"")
     }
 }
 
 @Serializable
-class SimpleCustomObject_CustomController3(@ContextualSerialization val service: SimpleCustomObject_ServiceAPI) : SimpleCustomObject_ControllerAPI {
+class SimpleCustomObject_CustomController3(@Contextual val service: SimpleCustomObject_ServiceAPI) :
+    SimpleCustomObject_ControllerAPI {
     override fun showUp() {
         println("Inited with name \"${service.names}\"")
     }
@@ -43,7 +47,6 @@ class SimpleCustomObject_BusinessService(override val names: List<String>) : Sim
 @Serializable
 class SimpleCustomObject_BusinessService1(override val names: List<String>) : SimpleCustomObject_ServiceAPI
 
-@ImplicitReflectionSerializer
 class SimpleCustomObjectTest {
     @Test
     fun test_that_simple_config_correctly_work() {

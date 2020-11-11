@@ -1,6 +1,5 @@
-package com.insanusmokrassar.sdi
+package dev.inmo.sdi
 
-import kotlinx.serialization.ImplicitReflectionSerializer
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlin.reflect.KClass
@@ -8,15 +7,13 @@ import kotlin.reflect.KClass
 internal val nonStrictJson = Json {
     isLenient = true
     ignoreUnknownKeys = true
-    serializeSpecialFloatingPointValues = true
 }
 
-@ImplicitReflectionSerializer
 fun Json.loadModule(
     json: String,
     vararg additionalClassesToInclude: KClass<*>,
     moduleBuilder: (SerializersModuleBuilder.() -> Unit)? = null
-): Module = parse(
+): Module = decodeFromString(
     if (moduleBuilder != null) {
         ModuleDeserializerStrategy(moduleBuilder, *additionalClassesToInclude)
     } else {
@@ -25,7 +22,6 @@ fun Json.loadModule(
     json
 )
 
-@ImplicitReflectionSerializer
 fun loadModule(
     json: String,
     vararg additionalClassesToInclude: KClass<*>,

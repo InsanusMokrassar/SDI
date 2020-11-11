@@ -1,4 +1,4 @@
-package com.insanusmokrassar.sdi
+package dev.inmo.sdi
 
 import kotlinx.serialization.*
 import kotlin.test.Test
@@ -12,7 +12,7 @@ interface Simple_ServiceAPI {
 }
 
 @Serializable
-class Simple_Controller(@ContextualSerialization val service: Simple_ServiceAPI) : Simple_ControllerAPI {
+class Simple_Controller(@Contextual val service: Simple_ServiceAPI) : Simple_ControllerAPI {
     override fun showUp() {
         println("Inited with name \"${service.names}\"")
     }
@@ -20,7 +20,6 @@ class Simple_Controller(@ContextualSerialization val service: Simple_ServiceAPI)
 @Serializable
 class Simple_BusinessService(override val names: List<String>) : Simple_ServiceAPI
 
-@ImplicitReflectionSerializer
 class SimpleTest {
     @Test
     fun test_that_simple_config_correctly_work() {

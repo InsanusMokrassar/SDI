@@ -1,25 +1,25 @@
-package com.insanusmokrassar.sdi.utils
+package dev.inmo.sdi.utils
 
 import kotlinx.serialization.*
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlin.reflect.KClass
 
 internal object AlreadyRegisteredException : Exception()
 
-@ImplicitReflectionSerializer
 internal class DependencyResolver<T : Any>(
     serialModuleBuilder: SerializersModuleBuilder,
     kClass: KClass<T>,
     private val formatterGetter: () -> Json,
     private val dependencyGetter: (String) -> Any
 ) : KSerializer<T> {
-    private val originalSerializer: KSerializer<T> = try {
-        kClass.serializer()
-    } catch (e: Exception) {
-        ContextSerializer(kClass)
-    }
+    @InternalSerializationApi
+    private val originalSerializer: KSerializer<T> = kClass.serializerOrNull() ?: ContextualSerializer(kClass)
     private val objectsCache = mutableMapOf<String, T>()
+    @InternalSerializationApi
     override val descriptor: SerialDescriptor = originalSerializer.descriptor
 
     init {
@@ -39,8 +39,9 @@ internal class DependencyResolver<T : Any>(
         }
     }
 
+    @InternalSerializationApi
     override fun deserialize(decoder: Decoder): T {
-        val decoded = decoder.decodeSerializableValue(JsonElementSerializer)
+        val decoded = decoder.decodeSerializableValue(JsonElement.serializer())
         return when {
             decoded is JsonPrimitive && decoded.contentOrNull != null -> decoded.content.let { dependencyName ->
                 @Suppress("UNCHECKED_CAST")
@@ -49,14 +50,15 @@ internal class DependencyResolver<T : Any>(
                 }
             }
             decoded is JsonArray -> {
-                val serializer = resolveSerializerByPackageName(decoded.getPrimitive(0).content)
+                val serializer = resolveSerializerByPackageName(decoded[0].jsonPrimitive.content)
                 @Suppress("UNCHECKED_CAST")
-                formatterGetter().fromJson(serializer, decoded[1]) as T
+                formatterGetter().decodeFromJsonElement(serializer, decoded[1]) as T
             }
-            else -> formatterGetter().fromJson(originalSerializer, decoded)
+            else -> formatterGetter().decodeFromJsonElement(originalSerializer, decoded)
         }
     }
 
+    @InternalSerializationApi
     override fun serialize(encoder: Encoder, value: T) {
         objectsCache.keys.firstOrNull {
             objectsCache[it] === value

@@ -1,36 +1,36 @@
-package com.insanusmokrassar.sdi
+package dev.inmo.sdi
 
-import com.insanusmokrassar.sdi.utils.createModuleBasedOnConfigRoot
+import dev.inmo.sdi.utils.createModuleBasedOnConfigRoot
 import kotlinx.serialization.*
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.SerializersModuleBuilder
 import kotlin.reflect.KClass
 
-@ImplicitReflectionSerializer
 internal class ModuleDeserializerStrategy(
     private val moduleBuilder: (SerializersModuleBuilder.() -> Unit)? = null,
     private vararg val additionalClassesToInclude: KClass<*>
 ) : DeserializationStrategy<Module> {
-    private val internalSerializer = MapSerializer(String.serializer(), ContextSerializer(Any::class))
+    private val internalSerializer = MapSerializer(String.serializer(), ContextualSerializer(Any::class))
     override val descriptor: SerialDescriptor
         get() = internalSerializer.descriptor
 
+    @InternalSerializationApi
     override fun deserialize(decoder: Decoder): Module {
-        val json = JsonObjectSerializer.deserialize(decoder)
+        val json = JsonObject.serializer().deserialize(decoder)
         val jsonSerialFormat = createModuleBasedOnConfigRoot(
             json,
             moduleBuilder,
-            decoder.context,
+            decoder.serializersModule,
             *additionalClassesToInclude
         )
         val resultJson = JsonObject(
             json.keys.associateWith { JsonPrimitive(it) }
         )
-        val map = jsonSerialFormat.fromJson(internalSerializer, resultJson)
+        val map = jsonSerialFormat.decodeFromJsonElement(internalSerializer, resultJson)
         return Module(map)
     }
-
-    override fun patch(decoder: Decoder, old: Module): Module = throw UpdateNotSupportedException("Module")
 }
