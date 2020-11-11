@@ -20,37 +20,33 @@ publishing {
     publications.all {
         artifact javadocsJar
 
-        pom.withXml {
-            asNode().children().last() + {
-                resolveStrategy = Closure.DELEGATE_FIRST
+        pom {
+            description = "Simple library for creating dependencies tree using Kotlin Serialization"
+            name = "Simple Dependency Injector"
+            url = "https://git.insanusmokrassar.com/InsanusMokrassar/SDI"
 
-                description "Simple library for creating dependencies tree using Kotlin Serialization"
-                name "Simple Dependency Injector"
-                url "https://git.insanusmokrassar.com/InsanusMokrassar/SDI"
+            scm {
+                developerConnection = "scm:git:[fetch=]https://git.insanusmokrassar.com/InsanusMokrassar/SDI.git[push=]https://git.insanusmokrassar.com/InsanusMokrassar/SDI.git"
+                url = "https://git.insanusmokrassar.com/InsanusMokrassar/SDI.git"
+            }
 
-                scm {
-                    developerConnection "scm:git:[fetch=]https://git.insanusmokrassar.com/InsanusMokrassar/SDI.git[push=]https://git.insanusmokrassar.com/InsanusMokrassar/SDI.git"
-                    url "https://git.insanusmokrassar.com/InsanusMokrassar/SDI.git"
-                }
+            developers {
+                
+                    developer {
+                        id = "InsanusMokrassar"
+                        name = "Ovsiannikov Aleksei"
+                        email = "ovsyannikov.alexey95@gmail.com"
+                    }
+                
+            }
 
-                developers {
-                    
-                        developer {
-                            id "InsanusMokrassar"
-                            name "Ovsiannikov Aleksei"
-                            email "ovsyannikov.alexey95@gmail.com"
-                        }
-                    
-                }
-
-                licenses {
-                    
-                        license {
-                            name "Apache Software License 2.0"
-                            url "https://git.insanusmokrassar.com/PostsSystem/SDI/src/master/LICENSE"
-                        }
-                    
-                }
+            licenses {
+                
+                    license {
+                        name = "Apache Software License 2.0"
+                        url = "https://git.insanusmokrassar.com/PostsSystem/SDI/src/master/LICENSE"
+                    }
+                
             }
         }
     }
