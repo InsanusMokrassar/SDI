@@ -1,7 +1,6 @@
-package com.insanusmokrassar.sdi.utils
+package dev.inmo.sdi.utils
 
-import kotlinx.serialization.InternalSerializationApi
-import kotlinx.serialization.KSerializer
+import kotlinx.serialization.*
 import kotlinx.serialization.modules.*
 import kotlin.reflect.KClass
 
@@ -11,7 +10,7 @@ fun <T : Any> SerializersModuleBuilder.optionalContextual(
 ) = try {
     contextual(kClass, kSerializer)
     true
-} catch (e: SerializerAlreadyRegisteredException) {
+} catch (e: SerializationException) {
     false
 }
 

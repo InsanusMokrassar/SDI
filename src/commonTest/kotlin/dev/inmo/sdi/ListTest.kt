@@ -1,4 +1,4 @@
-package com.insanusmokrassar.sdi
+package dev.inmo.sdi
 
 import kotlinx.serialization.*
 import kotlin.test.Test
@@ -12,14 +12,14 @@ interface List_ChildAPI {
 }
 
 @Serializable
-class List_Parent(override val services: List<@ContextualSerialization List_ChildAPI>) : List_ParentalAPI
+class List_Parent(override val services: List<@Contextual List_ChildAPI>) : List_ParentalAPI
 @Serializable
 class List_Child(override val names: List<String>) : List_ChildAPI
 
-@ImplicitReflectionSerializer
 class ListTest {
     val servicesNum = 10
 
+    @InternalSerializationApi
     @Test
     fun test_that_simple_config_correctly_work() {
         val names = (0 until servicesNum).map {

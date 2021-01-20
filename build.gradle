@@ -1,14 +1,13 @@
 buildscript {
     repositories {
-        mavenLocal()
         jcenter()
         mavenCentral()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "org.jetbrains.kotlin:kotlin-serialization:$kotlin_version"
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:$gradle_bintray_plugin_version"
         classpath "com.github.breadmoirai:github-release:$github_release_plugin_version"
     }
 }
@@ -16,10 +15,11 @@ buildscript {
 plugins {
     id "org.jetbrains.kotlin.multiplatform" version "$kotlin_version"
     id "org.jetbrains.kotlin.plugin.serialization" version "$kotlin_version"
+    id "org.jetbrains.kotlin.kapt" version "$kotlin_version"
 }
 
-project.version = "0.3.1"
-project.group = "com.insanusmokrassar"
+project.version = "$version"
+project.group = "$group"
 
 apply from: "publish.gradle"
 
@@ -28,6 +28,7 @@ repositories {
     jcenter()
     mavenCentral()
     maven { url "https://kotlin.bintray.com/kotlinx" }
+    maven { url 'https://jitpack.io' }
 }
 
 kotlin {
@@ -38,7 +39,7 @@ kotlin {
             dependencies {
                 implementation kotlin('stdlib')
                 api kotlin('reflect')
-                api "org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:$kotlin_serialisation_runtime_version"
+                api "org.jetbrains.kotlinx:kotlinx-serialization-json:$kotlin_serialisation_runtime_version"
             }
         }
         commonTest {
@@ -49,7 +50,7 @@ kotlin {
         }
         jvmMain {
             dependencies {
-                api "org.jetbrains.kotlinx:kotlinx-serialization-runtime:$kotlin_serialisation_runtime_version"
+                api "com.github.matfax.klassindex:library:$klassindex_version"
             }
         }
         jvmTest {
@@ -58,4 +59,8 @@ kotlin {
             }
         }
     }
+}
+
+dependencies {
+    kapt "com.github.matfax.klassindex:processor:$klassindex_version"
 }

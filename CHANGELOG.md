@@ -1,5 +1,17 @@
 # SDI changelogs
 
+## 0.4.0-rc
+
+**ALL PROJECT HAS MIGRATED FROM PACKAGE `com.insanusmokrassar` TO `dev.inmo`**
+
+* `Kotlin`: `1.3.72` -> `1.4.21`
+* `Serialization`: `0.20.0` -> `1.0.1`
+* New annotation `@SDIIncluded` has been added
+* Now `KlassIndex` is used to get `SDIIncluded` things
+* Now `Module` class is `Serializable` and is able to be deserialized from `Json` (unfortunately, currently is not
+  supported serialization)
+
+
 ## 0.3.1
 
 * `Kotlin`: `1.3.71` -> `1.3.72`

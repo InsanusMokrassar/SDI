@@ -1,17 +1,20 @@
-package com.insanusmokrassar.sdi.utils
+package dev.inmo.sdi.utils
 
 import kotlinx.serialization.*
 import kotlin.reflect.KClass
+import kotlin.reflect.KType
 
 internal expect fun resolveKClassByPackageName(packageName: String): KClass<*>
 
-@ImplicitReflectionSerializer
+@InternalSerializationApi
 internal fun <T : Any> resolveSerializerByKClass(kClass: KClass<T>): KSerializer<T> = kClass.serializer()
 
-@ImplicitReflectionSerializer
+@InternalSerializationApi
 internal fun resolveSerializerByPackageName(packageName: String): KSerializer<*> = resolveSerializerByKClass(
     resolveKClassByPackageName(packageName)
 )
+
+internal expect val <T : Any> KClass<T>.supertypes: List<KType>
 
 internal val KClass<*>.allSubclasses: Set<KClass<*>>
     get() {
