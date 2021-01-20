@@ -1,7 +1,7 @@
 package dev.inmo.sdi
 
-import org.atteo.classindex.ClassIndex
-import org.atteo.classindex.IndexAnnotated
+import com.github.matfax.klassindex.IndexAnnotated
+import com.github.matfax.klassindex.KlassIndex
 import kotlin.reflect.KClass
 
 @Retention(AnnotationRetention.RUNTIME)
@@ -9,10 +9,10 @@ import kotlin.reflect.KClass
 @IndexAnnotated
 actual annotation class SDIIncluded actual constructor(actual val customNames: Array<String>)
 
-internal actual fun getClassesForIncludingInSDI(): List<Pair<KClass<*>, List<String>>> = ClassIndex.getAnnotated(
-    SDIIncluded::class.java
+internal actual fun getClassesForIncludingInSDI(): List<Pair<KClass<*>, List<String>>> = KlassIndex.getAnnotated(
+    SDIIncluded::class
 ).map {
-    it.kotlin.let {
+    it.let {
         it to it.annotations.flatMap { (it as? SDIIncluded) ?.customNames ?.toList() ?: emptyList() }
     }
 }

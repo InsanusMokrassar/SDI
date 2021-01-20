@@ -33,4 +33,7 @@ fun loadModule(
     json: String,
     vararg additionalClassesToInclude: KClass<*>,
     moduleBuilder: (SerializersModuleBuilder.() -> Unit)? = null
-): Module = nonStrictJson.loadModule(json, *additionalClassesToInclude, moduleBuilder = moduleBuilder)
+): Module = nonStrictJson.loadModule(json, *additionalClassesToInclude) {
+    includeClassesForSDI()
+    moduleBuilder ?.invoke(this)
+}

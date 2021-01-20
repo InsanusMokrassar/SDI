@@ -1,6 +1,6 @@
 # SDI
 
- [ ![Download](https://api.bintray.com/packages/insanusmokrassar/InsanusMokrassar/sdi/images/download.svg) ](https://bintray.com/insanusmokrassar/InsanusMokrassar/sdi/_latestVersion)
+[![Download](https://api.bintray.com/packages/insanusmokrassar/InsanusMokrassar/sdi/images/download.svg)](https://bintray.com/insanusmokrassar/InsanusMokrassar/sdi/_latestVersion)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.github.insanusmokrassar/sdi/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.github.insanusmokrassar/sdi)
 [![Build Status](https://travis-ci.com/InsanusMokrassar/SDI.svg?branch=master)](https://travis-ci.com/InsanusMokrassar/SDI)
 
