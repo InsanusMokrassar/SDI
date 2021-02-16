@@ -1,5 +1,7 @@
 # SDI changelogs
 
+## 0.4.0-rc2
+
 ## 0.4.0-rc
 
 **ALL PROJECT HAS MIGRATED FROM PACKAGE `com.insanusmokrassar` TO `dev.inmo`**
