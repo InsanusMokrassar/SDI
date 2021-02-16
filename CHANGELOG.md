@@ -1,5 +1,10 @@
 # SDI changelogs
 
+## 0.4.0-rc2
+
+* `Kotlin`: `1.4.21` -> `1.4.30`
+* `Serialization`: `1.0.1` -> `1.1.0-RC`
+
 ## 0.4.0-rc
 
 **ALL PROJECT HAS MIGRATED FROM PACKAGE `com.insanusmokrassar` TO `dev.inmo`**
