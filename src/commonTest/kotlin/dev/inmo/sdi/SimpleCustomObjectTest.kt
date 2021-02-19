@@ -12,7 +12,7 @@ interface SimpleCustomObject_ServiceAPI {
 }
 
 @Serializable
-class SimpleCustomObject_Controller(@Contextual val service: SimpleCustomObject_ServiceAPI) :
+data class SimpleCustomObject_Controller(@Contextual val service: SimpleCustomObject_ServiceAPI) :
     SimpleCustomObject_ControllerAPI {
     override fun showUp() {
         println("Inited with name \"${service.names}\"")
@@ -20,7 +20,7 @@ class SimpleCustomObject_Controller(@Contextual val service: SimpleCustomObject_
 }
 
 @Serializable
-class SimpleCustomObject_CustomController1(@Contextual val service: SimpleCustomObject_ServiceAPI) :
+data class SimpleCustomObject_CustomController1(@Contextual val service: SimpleCustomObject_ServiceAPI) :
     SimpleCustomObject_ControllerAPI {
     override fun showUp() {
         println("Inited with name \"${service.names}\"")
@@ -28,7 +28,7 @@ class SimpleCustomObject_CustomController1(@Contextual val service: SimpleCustom
 }
 
 @Serializable
-class SimpleCustomObject_CustomController2(@Contextual val service: SimpleCustomObject_BusinessService) :
+data class SimpleCustomObject_CustomController2(@Contextual val service: SimpleCustomObject_BusinessService) :
     SimpleCustomObject_ControllerAPI {
     override fun showUp() {
         println("Inited with name \"${service.names}\"")
@@ -36,16 +36,16 @@ class SimpleCustomObject_CustomController2(@Contextual val service: SimpleCustom
 }
 
 @Serializable
-class SimpleCustomObject_CustomController3(@Contextual val service: SimpleCustomObject_ServiceAPI) :
+data class SimpleCustomObject_CustomController3(@Contextual val service: SimpleCustomObject_ServiceAPI) :
     SimpleCustomObject_ControllerAPI {
     override fun showUp() {
         println("Inited with name \"${service.names}\"")
     }
 }
 @Serializable
-class SimpleCustomObject_BusinessService(override val names: List<String>) : SimpleCustomObject_ServiceAPI
+data class SimpleCustomObject_BusinessService(override val names: List<String>) : SimpleCustomObject_ServiceAPI
 @Serializable
-class SimpleCustomObject_BusinessService1(override val names: List<String>) : SimpleCustomObject_ServiceAPI
+data class SimpleCustomObject_BusinessService1(override val names: List<String>) : SimpleCustomObject_ServiceAPI
 
 class SimpleCustomObjectTest {
     @InternalSerializationApi
@@ -118,5 +118,7 @@ class SimpleCustomObjectTest {
         (module[customController2Name] as SimpleCustomObject_ControllerAPI)
         val customController2 = (module[customController2Name] as SimpleCustomObject_CustomController2)
         assertEquals(customNames.toList(), customController2.service.names)
+
+        testModuleSerialization(module)
     }
 }

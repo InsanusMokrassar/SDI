@@ -12,9 +12,6 @@ fun <T : Any> SerializersModuleBuilder.optionalContextual(
     true
 } catch (e: SerializationException) {
     false
+} catch (e: IllegalArgumentException) { // can be a SerializerAlreadyRegisteredException
+    false
 }
-
-@InternalSerializationApi
-inline fun <reified T : Any> SerializersModuleBuilder.optionalContextual(
-    kSerializer: KSerializer<T>
-) = optionalContextual(T::class, kSerializer)

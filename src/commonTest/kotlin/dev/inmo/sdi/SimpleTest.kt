@@ -12,13 +12,13 @@ interface Simple_ServiceAPI {
 }
 
 @Serializable
-class Simple_Controller(@Contextual val service: Simple_ServiceAPI) : Simple_ControllerAPI {
+data class Simple_Controller(@Contextual val service: Simple_ServiceAPI) : Simple_ControllerAPI {
     override fun showUp() {
         println("Inited with name \"${service.names}\"")
     }
 }
 @Serializable
-class Simple_BusinessService(override val names: List<String>) : Simple_ServiceAPI
+data class Simple_BusinessService(override val names: List<String>) : Simple_ServiceAPI
 
 class SimpleTest {
     @InternalSerializationApi
@@ -46,5 +46,7 @@ class SimpleTest {
         (module[controllerName] as Simple_ControllerAPI)
         val controller = (module["controller"] as Simple_Controller)
         assertEquals(names.toList(), controller.service.names)
+
+        testModuleSerialization(module)
     }
 }

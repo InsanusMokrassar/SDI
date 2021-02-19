@@ -21,9 +21,9 @@ fun Json.loadModule(
     moduleBuilder: (SerializersModuleBuilder.() -> Unit)? = null
 ): Module = decodeFromString(
     if (moduleBuilder != null) {
-        ModuleDeserializerStrategy(moduleBuilder, *additionalClassesToInclude)
+        ModuleSerializer(moduleBuilder, *additionalClassesToInclude)
     } else {
-        ModuleDeserializerStrategy(additionalClassesToInclude = *additionalClassesToInclude)
+        ModuleSerializer(additionalClassesToInclude = *additionalClassesToInclude)
     },
     json
 )
