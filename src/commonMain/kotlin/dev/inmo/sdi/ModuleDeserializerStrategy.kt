@@ -25,6 +25,7 @@ internal class ModuleDeserializerStrategy(
     override fun deserialize(decoder: Decoder): Module {
         val json = JsonObject.serializer().deserialize(decoder)
         val jsonSerialFormat = createModuleBasedOnConfigRoot(
+            (decoder as? JsonDecoder) ?.json,
             json,
             moduleBuilder,
             decoder.serializersModule,

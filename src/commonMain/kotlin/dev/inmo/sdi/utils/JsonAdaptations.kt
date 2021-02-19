@@ -2,6 +2,7 @@ package dev.inmo.sdi.utils
 
 import dev.inmo.sdi.getClassesForIncludingInSDI
 import kotlinx.serialization.InternalSerializationApi
+import kotlinx.serialization.encoding.Decoder
 import kotlinx.serialization.json.*
 import kotlinx.serialization.modules.*
 import kotlin.reflect.KClass
@@ -26,7 +27,7 @@ private fun JsonElement.resolvePackageName(currentKey: String, otherDependencies
         is JsonObject -> if (currentKey in otherDependenciesKeys) {
             null to currentKey
         } else {
-            (namesToTheirClasses[currentKey] ?: currentKey) to null
+            (get("type") ?.jsonPrimitive ?.contentOrNull ?: namesToTheirClasses[currentKey] ?: currentKey) to null
         }
         is JsonArray -> return get(0).jsonPrimitive.contentOrNull ?.let { (namesToTheirClasses[it] ?: it) to null } ?: throw IllegalArgumentException("Value on first argument of dependency value must be its package as a string, but was provided ${get(0)}")
     }
@@ -34,6 +35,7 @@ private fun JsonElement.resolvePackageName(currentKey: String, otherDependencies
 
 @InternalSerializationApi
 internal fun createModuleBasedOnConfigRoot(
+    baseJsonFormat: Json?,
     jsonObject: JsonObject,
     moduleBuilder: (SerializersModuleBuilder.() -> Unit)? = null,
     baseContext: SerializersModule,
@@ -43,7 +45,7 @@ internal fun createModuleBasedOnConfigRoot(
     lateinit var jsonStringFormat: Json
     caches = jsonObject.keys.map { key ->
         key to callback@{
-            val elemValue = jsonObject.get(key) ?: throw IllegalStateException("Value for key $key must be provided, but was not")
+            val elemValue = jsonObject[key] ?: throw IllegalStateException("Value for key $key must be provided, but was not")
 
             val packageName: String = elemValue.resolvePackageName(key, jsonObject.keys).let { (packageName, otherDependencyName) ->
                 when {
@@ -115,7 +117,7 @@ internal fun createModuleBasedOnConfigRoot(
             }
         }
     )
-    return Json {
+    return Json(baseJsonFormat ?: Json.Default) {
         useArrayPolymorphism = true
         serializersModule = context
     }.also {

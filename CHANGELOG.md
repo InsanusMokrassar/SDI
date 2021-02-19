@@ -2,6 +2,9 @@
 
 ## 0.4.0
 
+* Fix of [#6](https://github.com/InsanusMokrassar/SDI/issues/6)
+* Fix of [#7](https://github.com/InsanusMokrassar/SDI/issues/7)
+
 ## 0.4.0-rc2
 
 * `Kotlin`: `1.4.21` -> `1.4.30`
