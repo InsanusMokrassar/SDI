@@ -1,6 +1,7 @@
 package dev.inmo.sdi
 
 import kotlinx.serialization.*
+import kotlinx.serialization.json.JsonObject
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
@@ -12,9 +13,9 @@ interface List_ChildAPI {
 }
 
 @Serializable
-class List_Parent(override val services: List<@Contextual List_ChildAPI>) : List_ParentalAPI
+data class List_Parent(override val services: List<@Contextual List_ChildAPI>) : List_ParentalAPI
 @Serializable
-class List_Child(override val names: List<String>) : List_ChildAPI
+data class List_Child(override val names: List<String>) : List_ChildAPI
 
 class ListTest {
     val servicesNum = 10
@@ -50,5 +51,7 @@ class ListTest {
         controller.services.forEachIndexed { i, service ->
             assertEquals(names[i].second.toList(), service.names)
         }
+
+        testModuleSerialization(module)
     }
 }
