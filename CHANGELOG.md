@@ -3,6 +3,8 @@
 ## 0.4.1
 
 * `Serialization`: `1.1.0-RC` -> `1.1.0`
+* `ModuleSerializer` now can be instantiated automatically
+
 
 ## 0.4.0
 

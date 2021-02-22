@@ -94,9 +94,16 @@ internal data class SerializationContext(
 
 @Serializer(Module::class)
 class ModuleSerializer(
-    private val moduleBuilder: (SerializersModuleBuilder.() -> Unit)? = null,
-    private vararg val additionalClassesToInclude: KClass<*>
+    private val additionalClassesToInclude: Iterable<KClass<*>>,
+    private val moduleBuilder: (SerializersModuleBuilder.() -> Unit)? = null
 ) : KSerializer<Module> {
+    constructor() : this(emptyList()) // to be able to create default instance
+
+    constructor(
+        moduleBuilder: (SerializersModuleBuilder.() -> Unit)? = null,
+        vararg additionalClassesToInclude: KClass<*>,
+    ) : this(additionalClassesToInclude.toList(), moduleBuilder)
+
     private val jsonObjectSerializer = JsonObject.serializer()
     override val descriptor: SerialDescriptor = jsonObjectSerializer.descriptor
 
