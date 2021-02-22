@@ -1,5 +1,7 @@
 # SDI changelogs
 
+## 0.4.1
+
 ## 0.4.0
 
 * Fix of [#6](https://github.com/InsanusMokrassar/SDI/issues/6)
