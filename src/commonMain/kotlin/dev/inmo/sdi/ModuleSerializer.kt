@@ -94,7 +94,7 @@ internal data class SerializationContext(
 
 @Serializer(Module::class)
 class ModuleSerializer(
-    private val additionalClassesToInclude: Iterable<KClass<*>>,
+    private val additionalClassesToInclude: Iterable<KClass<*>> = emptyList(),
     private val moduleBuilder: (SerializersModuleBuilder.() -> Unit)? = null
 ) : KSerializer<Module> {
     constructor() : this(emptyList()) // to be able to create default instance
