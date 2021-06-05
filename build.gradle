@@ -22,6 +22,7 @@ project.version = "$version"
 project.group = "$group"
 
 apply from: "publish.gradle"
+apply from: "github_release.gradle"
 
 repositories {
     mavenLocal()
