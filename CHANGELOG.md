@@ -1,5 +1,9 @@
 # SDI changelogs
 
+## 0.5.0
+
+...
+
 ## 0.4.1
 
 * `Serialization`: `1.1.0-RC` -> `1.1.0`
