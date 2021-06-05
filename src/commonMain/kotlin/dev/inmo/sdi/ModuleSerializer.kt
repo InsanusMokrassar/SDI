@@ -97,12 +97,6 @@ class ModuleSerializer(
     private val additionalClassesToInclude: Iterable<KClass<*>> = emptyList(),
     private val moduleBuilder: (SerializersModuleBuilder.() -> Unit)? = null
 ) : KSerializer<Module> {
-    constructor() : this(emptyList()) // to be able to create default instance
-
-    constructor(
-        moduleBuilder: (SerializersModuleBuilder.() -> Unit)? = null,
-        vararg additionalClassesToInclude: KClass<*>,
-    ) : this(additionalClassesToInclude.toList(), moduleBuilder)
 
     private val jsonObjectSerializer = JsonObject.serializer()
     override val descriptor: SerialDescriptor = jsonObjectSerializer.descriptor
@@ -159,5 +153,10 @@ class ModuleSerializer(
         )
     }
 }
+
+fun ModuleSerializer(
+    moduleBuilder: (SerializersModuleBuilder.() -> Unit)? = null,
+    vararg additionalClassesToInclude: KClass<*>
+) = ModuleSerializer(additionalClassesToInclude.toList(), moduleBuilder)
 
 val DefaultModuleSerializer = ModuleSerializer()
